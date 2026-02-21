@@ -1,0 +1,59 @@
+{% load static %}
+<!doctype html>
+<html>
+  <head>
+    <title>Disaster Alert Portal</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="logo">🚨 Disaster Alert</div>
+      <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'alerts' %}">Alerts</a>
+        <a href="{% url 'safety' %}">Safety</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        {% if user.is_authenticated %}
+        <span style="color: white; margin-left: 15px; font-weight: bold">
+          👤 {{ user.username }}
+        </span>
+        <a class="login-btn" href="{% url 'logout' %}">Logout</a>
+        {% else %}
+        <a class="login-btn" href="{% url 'login' %}">Login</a>
+        {% endif %}
+
+        <a href="{% url 'disaster_ai' %}" class="disasterai-link">DisasterAI</a>
+      </nav>
+      {% if messages %}
+      <div style="text-align: center; padding: 10px">
+        {% for message in messages %}
+        <p style="color: red">{{ message }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </header>
+
+    <style>
+      .navbar nav .disasterai-link {
+        color: #fff;
+        background: #3b82f6;
+        border-radius: 4px;
+        padding: 6px 14px;
+        margin-left: 8px;
+        font-weight: bold;
+        transition: background 0.2s;
+      }
+      .navbar nav .disasterai-link:hover {
+        background: #2563eb;
+      }
+    </style>
+
+    {% block content %}{% endblock %}
+
+    <footer>
+      <p>© 2026 Disaster Alert & Safety Portal</p>
+    </footer>
+  </body>
+</html>

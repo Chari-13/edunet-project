@@ -1,0 +1,177 @@
+{% extends 'base.html' %} {% block content %}
+
+<h2>Welcome to Disaster Dashboard</h2>
+
+<!-- ================= WEATHER SECTION ================= -->
+<div style="display: flex; justify-content: center; margin-top: 30px">
+  <div
+    style="
+      background: white;
+      padding: 30px;
+      width: 400px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    "
+  >
+    <h3 style="margin-bottom: 15px">🌦 Current Weather</h3>
+
+    <p><strong>📍 Location:</strong> <span id="location">Fetching...</span></p>
+
+    <div style="font-size: 40px; margin: 15px 0">
+      <span id="temp">--</span>
+    </div>
+
+    <div style="font-size: 50px" id="weather-icon">☁️</div>
+
+    <p style="font-size: 18px">
+      <span id="condition">--</span>
+    </p>
+
+    <hr style="margin: 15px 0" />
+
+    <small> Lat: <span id="lat"></span> | Lon: <span id="lon"></span> </small>
+  </div>
+</div>
+
+<h3 style="text-align: center; margin-top: 40px">🗺 Disaster Alert Map</h3>
+<div id="map" style="height: 500px; width: 100%; margin: 20px 0"></div>
+
+<!-- ================= ALERTS SECTION ================= -->
+<div>
+  <h3 style="margin-top: 40px">🚨 Active Alerts</h3>
+  {% if alerts %}
+  <ul>
+    {% for alert in alerts %}
+    <li>
+      <strong>{{ alert.disaster_type }}</strong> - {{ alert.description }}
+      <br />
+      <em>{{ alert.date_time }}</em>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>No active alerts at the moment.</p>
+  {% endif %}
+</div>
+
+<hr />
+
+<!-- ================= SAFETY TIPS ================= -->
+<div>
+  <h3>🛟 Safety Tips</h3>
+  <ul>
+    <li>Stay indoors during severe weather</li>
+    <li>Avoid flooded roads</li>
+    <li>Keep emergency kit ready</li>
+    <li>Charge mobile phones</li>
+  </ul>
+</div>
+
+<!-- ================= WEATHER + MAP SCRIPT ================= -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // ================= WEATHER =================
+    function fetchWeather(lat, lon) {
+      document.getElementById("lat").innerText = lat;
+      document.getElementById("lon").innerText = lon;
+
+      fetch(`/get-location-weather/?lat=${lat}&lon=${lon}`)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            document.getElementById("location").innerText =
+              "Weather unavailable";
+            return;
+          }
+
+          document.getElementById("location").innerText =
+            data.city + ", " + data.country;
+
+          document.getElementById("temp").innerText = data.temperature + " °C";
+
+          document.getElementById("condition").innerText = data.condition;
+
+          // Weather Icon
+          let condition = data.condition.toLowerCase();
+          let icon = "☁️";
+
+          if (condition.includes("clear")) icon = "☀️";
+          else if (condition.includes("cloud")) icon = "☁️";
+          else if (condition.includes("rain")) icon = "🌧️";
+          else if (condition.includes("storm")) icon = "⛈️";
+          else if (condition.includes("snow")) icon = "❄️";
+
+          document.getElementById("weather-icon").innerText = icon;
+        })
+        .catch(() => {
+          document.getElementById("location").innerText =
+            "Weather fetch failed";
+        });
+    }
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        fetchWeather(position.coords.latitude, position.coords.longitude);
+      });
+    } else {
+      fetchWeather("12.9716", "77.5946");
+    }
+
+    // ================= MAP =================
+
+    if (document.getElementById("map")) {
+      // Prevent Leaflet double initialization
+      if (window.myMap) {
+        window.myMap.remove();
+      }
+
+      window.myMap = L.map("map").setView([20.5937, 78.9629], 6);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap",
+      }).addTo(window.myMap);
+
+      // User location marker
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          let userLat = position.coords.latitude;
+          let userLon = position.coords.longitude;
+
+          window.myMap.setView([userLat, userLon], 10);
+
+          L.marker([userLat, userLon])
+            .addTo(window.myMap)
+            .bindPopup("📍 You are here")
+            .openPopup();
+        });
+      }
+
+      // Alert markers
+      const alertData = JSON.parse("{{ alert_data|escapejs }}");
+
+      alertData.forEach(function (alert) {
+        if (alert.latitude && alert.longitude) {
+          let color = "green";
+          if (alert.severity === "High") color = "red";
+          else if (alert.severity === "Medium") color = "orange";
+
+          L.circle([alert.latitude, alert.longitude], {
+            color: color,
+            fillColor: color,
+            fillOpacity: 0.5,
+            radius: alert.severity === "High" ? 7000 : 4000,
+          }).addTo(window.myMap).bindPopup(`
+          <b>${alert.disaster_type}</b><br>
+          Severity: ${alert.severity}<br>
+          ${alert.description}<br>
+          <b style="color:red;">⚠ Move to safer location immediately!</b>
+        `);
+        }
+      });
+    }
+  });
+</script>
+
+{% endblock %}

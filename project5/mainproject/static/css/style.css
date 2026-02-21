@@ -1,0 +1,228 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: #f4f6f8;
+}
+
+/* Navbar */
+.navbar {
+  background: #b71c1c;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+  font-weight: 500;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+.login-btn {
+  background: white;
+  color: #b71c1c !important;
+  padding: 6px 14px;
+  border-radius: 5px;
+}
+
+/* Hero section */
+.hero {
+  background: linear-gradient(to right, #d32f2f, #ff5252);
+  color: white;
+  padding: 80px 40px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 18px;
+}
+
+/* Cards */
+.cards {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  padding: 50px;
+}
+
+.card {
+  background: white;
+  padding: 25px;
+  width: 260px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+}
+
+footer {
+  background: #222;
+  color: white;
+  text-align: center;
+  padding: 15px;
+}
+/* ===== AUTH PAGES ===== */
+
+.auth-hero {
+  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+  padding: 70px 20px;
+  text-align: center;
+  color: white;
+}
+
+.auth-hero h1 {
+  font-size: 38px;
+  font-weight: bold;
+}
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  margin-top: -40px;
+  margin-bottom: 60px;
+}
+
+.auth-card {
+  background: white;
+  padding: 40px;
+  width: 360px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.auth-card h2 {
+  margin-bottom: 20px;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.auth-card button {
+  width: 100%;
+  padding: 12px;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.auth-card button:hover {
+  background: #4338ca;
+}
+
+.auth-card a {
+  color: #4f46e5;
+  font-weight: 500;
+  text-decoration: none;
+}
+.auth-card a:hover {
+  text-decoration: underline;
+}
+
+.hero {
+  text-align: center;
+  padding: 40px 20px;
+  background: linear-gradient(to right, #b91c1c, #ef4444);
+  color: white;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 10px;
+  width: 320px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card h2 {
+  color: #b91c1c;
+  margin-bottom: 15px;
+}
+.call-btn {
+  background: #16a34a;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.call-btn:hover {
+  background: #15803d;
+}
+.call-btn {
+  background: #16a34a;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.call-btn:hover {
+  background: #15803d;
+}
+
+.sos-btn {
+  background: #dc2626;
+  color: white;
+  font-size: 22px;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sos-btn:hover {
+  background: #b91c1c;
+}
+
+.sos-message {
+  display: none;
+  text-align: center;
+  margin-top: 20px;
+  color: #b91c1c;
+  font-weight: bold;
+}

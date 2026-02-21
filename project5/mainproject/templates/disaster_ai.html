@@ -1,0 +1,94 @@
+{% extends 'base.html' %} {% block content %}
+
+<div style="display: flex; justify-content: center; margin-top: 40px">
+  <div
+    style="
+      background: white;
+      width: 700px;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    "
+  >
+    <h2 style="text-align: center">🤖 DisasterAI – Smart Assistant</h2>
+    <p style="text-align: center; color: gray">
+      Ask about current disaster alerts or safety guidance.
+    </p>
+
+    <div
+      id="chat-box"
+      style="
+        height: 300px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        background: #f9f9f9;
+      "
+    ></div>
+
+    <div style="display: flex; gap: 10px">
+      <input
+        id="user-input"
+        type="text"
+        placeholder="Type your message..."
+        style="
+          flex: 1;
+          padding: 10px;
+          border-radius: 6px;
+          border: 1px solid #ccc;
+        "
+      />
+      <button
+        onclick="sendMessage()"
+        style="
+          background: #2563eb;
+          color: white;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 6px;
+        "
+      >
+        Send
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function sendMessage() {
+    const input = document.getElementById("user-input");
+    const message = input.value.trim();
+    if (!message) return;
+
+    const chatBox = document.getElementById("chat-box");
+
+    // Show user message
+    chatBox.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+    input.value = "";
+
+    fetch("/ai-chat/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+      body: JSON.stringify({ message: message }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          chatBox.innerHTML += `<p><strong>AI:</strong> ${data.response}</p>`;
+        } else {
+          chatBox.innerHTML += `<p style="color:red;"><strong>Error:</strong> ${data.error}</p>`;
+        }
+        chatBox.scrollTop = chatBox.scrollHeight;
+      })
+      .catch(() => {
+        chatBox.innerHTML += `<p style="color:red;">AI service unavailable.</p>`;
+      });
+  }
+</script>
+
+{% endblock %}

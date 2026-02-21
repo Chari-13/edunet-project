@@ -1,0 +1,188 @@
+{% extends 'base.html' %} {% block content %}
+
+<!-- ================= HERO ================= -->
+<section
+  style="
+    background: linear-gradient(135deg, #7f1d1d, #dc2626);
+    padding: 70px 20px;
+    text-align: center;
+    color: white;
+  "
+>
+  <h1 style="font-size: 44px; margin-bottom: 10px">Safety Guidelines</h1>
+  <p style="font-size: 18px">
+    Official disaster preparedness and response guidance.
+  </p>
+</section>
+
+<!-- ================= ALERT BANNER ================= -->
+<div
+  style="
+    background: #fff3cd;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    color: #856404;
+  "
+>
+  ⚠ Always follow official instructions from local authorities.
+</div>
+
+<!-- ================= MAIN CONTENT ================= -->
+<div style="max-width: 1000px; margin: 50px auto; padding: 0 20px">
+  <!-- BEFORE DURING AFTER -->
+  <div
+    style="
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    "
+  >
+    <div class="phase-card">
+      <h2>🟢 Before Disaster</h2>
+      <ul>
+        <li>Create an evacuation plan.</li>
+        <li>Prepare emergency kit.</li>
+        <li>Keep emergency numbers saved.</li>
+        <li>Stay informed through alerts.</li>
+      </ul>
+    </div>
+
+    <div class="phase-card">
+      <h2>🟡 During Disaster</h2>
+      <ul>
+        <li>Stay calm and follow official alerts.</li>
+        <li>Move to safer location immediately.</li>
+        <li>Avoid risky areas (flood water, weak buildings).</li>
+        <li>Do not spread rumors.</li>
+      </ul>
+    </div>
+
+    <div class="phase-card">
+      <h2>🔵 After Disaster</h2>
+      <ul>
+        <li>Check for injuries.</li>
+        <li>Avoid damaged structures.</li>
+        <li>Report hazards to authorities.</li>
+        <li>Help vulnerable individuals.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ================= DISASTER TYPES ACCORDION ================= -->
+  <div style="margin-top: 60px">
+    <h2 style="text-align: center">Disaster-Specific Guidance</h2>
+
+    <div class="accordion">
+      <button onclick="toggleAcc(this)">🌊 Flood Safety</button>
+      <div class="panel">
+        <ul>
+          <li>Move to higher ground immediately.</li>
+          <li>Do not walk or drive through floodwaters.</li>
+          <li>Switch off electricity.</li>
+        </ul>
+      </div>
+
+      <button onclick="toggleAcc(this)">🌪 Cyclone Safety</button>
+      <div class="panel">
+        <ul>
+          <li>Stay indoors away from windows.</li>
+          <li>Secure loose outdoor objects.</li>
+          <li>Keep emergency supplies ready.</li>
+        </ul>
+      </div>
+
+      <button onclick="toggleAcc(this)">🫨 Earthquake Safety</button>
+      <div class="panel">
+        <ul>
+          <li>Drop, Cover, and Hold On.</li>
+          <li>Stay away from glass.</li>
+          <li>Move to open area after shaking stops.</li>
+        </ul>
+      </div>
+
+      <button onclick="toggleAcc(this)">🔥 Heatwave Safety</button>
+      <div class="panel">
+        <ul>
+          <li>Drink water frequently.</li>
+          <li>Avoid outdoor work during peak heat.</li>
+          <li>Wear light clothing.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= EMERGENCY KIT ================= -->
+  <div style="margin-top: 60px">
+    <h2 style="text-align: center">Emergency Kit Essentials</h2>
+
+    <div
+      style="
+        background: #f3f4f6;
+        padding: 25px;
+        border-radius: 12px;
+        margin-top: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <ul style="columns: 2">
+        <li>First Aid Kit</li>
+        <li>Drinking Water</li>
+        <li>Non-perishable Food</li>
+        <li>Flashlight</li>
+        <li>Power Bank</li>
+        <li>Important Documents</li>
+        <li>Battery Radio</li>
+        <li>Medicines</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ================= STYLES ================= -->
+<style>
+  .phase-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 30%;
+    min-width: 280px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .phase-card ul {
+    margin-top: 10px;
+    line-height: 1.8;
+  }
+
+  .accordion button {
+    width: 100%;
+    background: #dc2626;
+    color: white;
+    padding: 14px;
+    margin-top: 10px;
+    border: none;
+    text-align: left;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+
+  .panel {
+    display: none;
+    background: #f9fafb;
+    padding: 15px;
+    border-radius: 6px;
+  }
+</style>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+  function toggleAcc(btn) {
+    let panel = btn.nextElementSibling;
+    panel.style.display = panel.style.display === "block" ? "none" : "block";
+  }
+</script>
+
+{% endblock %}

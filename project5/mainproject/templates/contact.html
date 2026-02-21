@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section class="hero">
+  <h1>Emergency Support & Contact Information</h1>
+  <p>
+    In case of any disaster or emergency, contact the appropriate authorities immediately.
+  </p>
+</section>
+
+<div class="cards">
+
+  <!-- Quick Call Emergency -->
+  <div class="card">
+    <h2>🚨 Quick Emergency Call</h2>
+
+    <p><strong>Police:</strong>
+      <a href="tel:100" class="call-btn">📞 Call 100</a>
+    </p>
+
+    <p><strong>Fire & Rescue:</strong>
+      <a href="tel:101" class="call-btn">📞 Call 101</a>
+    </p>
+
+    <p><strong>Ambulance:</strong>
+      <a href="tel:108" class="call-btn">📞 Call 108</a>
+    </p>
+
+    <p><strong>Disaster Helpline:</strong>
+      <a href="tel:1070" class="call-btn">📞 Call 1070</a>
+    </p>
+  </div>
+
+  <!-- State Emergency Support -->
+  <div class="card">
+    <h2>🏢 Karnataka State Emergency Control Room</h2>
+    <p><strong>Helpline:</strong> 080-1070</p>
+    <p><strong>Email:</strong> relief@karnataka.gov.in</p>
+    <p><strong>Location:</strong> Bengaluru, Karnataka</p>
+    <p>
+      For flood, cyclone, earthquake, landslide or severe weather emergencies,
+      contact the state disaster management authority immediately.
+    </p>
+  </div>
+
+  <!-- Safety Reminder -->
+  <div class="card">
+    <h2>🛟 Safety Reminder</h2>
+    <ul>
+      <li>Stay calm and follow official advisories.</li>
+      <li>Move to safer locations when instructed.</li>
+      <li>Keep emergency kit and documents ready.</li>
+      <li>Stay updated via official government channels.</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- SOS Button -->
+<div style="text-align:center; margin:40px 0;">
+  <button onclick="triggerSOS()" class="sos-btn">
+    🚨 SOS EMERGENCY
+  </button>
+</div>
+
+<div id="sosMessage" class="sos-message">
+  🚨 Emergency Alert Activated! Contact nearest emergency service immediately!
+</div>
+
+<!-- Relief Center Map -->
+<h2 style="text-align:center; margin-top:50px;">🗺 Relief Centers in Karnataka</h2>
+<div id="reliefMap" style="height:450px; margin:20px;"></div>
+
+
+<script>
+
+function triggerSOS() {
+    document.getElementById("sosMessage").style.display = "block";
+    alert("🚨 SOS Activated! Please call emergency services immediately.");
+}
+
+
+// Relief Map
+var reliefMap = L.map('reliefMap').setView([15.3173, 75.7139], 7);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+}).addTo(reliefMap);
+
+var centers = [
+    ["Bengaluru Relief Center", 12.9716, 77.5946],
+    ["Mysuru Relief Center", 12.2958, 76.6394],
+    ["Mangaluru Relief Center", 12.9141, 74.8560],
+    ["Hubli Relief Center", 15.3647, 75.1240],
+    ["Belagavi Relief Center", 15.8497, 74.4977]
+];
+
+centers.forEach(function(center) {
+    L.marker([center[1], center[2]])
+        .addTo(reliefMap)
+        .bindPopup("<b>" + center[0] + "</b><br>Safe shelter available.");
+});
+
+</script>
+
+{% endblock %}

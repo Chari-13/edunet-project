@@ -1,0 +1,72 @@
+{% extends 'base.html' %} {% block content %}
+
+<h2 style="text-align: center; margin-top: 30px">Active Alerts</h2>
+
+<!-- WEATHER ALERT SECTION -->
+<div class="card" style="max-width: 500px; margin: 20px auto">
+  <h3>🌦 Current Weather Advisory</h3>
+  <p>
+    <strong>Location:</strong> <span id="weatherLocation">Fetching...</span>
+  </p>
+  <p><strong>Temperature:</strong> <span id="weatherTemp"></span></p>
+  <p><strong>Condition:</strong> <span id="weatherCondition"></span></p>
+</div>
+
+<hr />
+
+<!-- EXISTING ALERTS -->
+<div style="text-align: center">
+  {% if alerts %} {% for alert in alerts %}
+  <div class="card" style="max-width: 500px; margin: 20px auto">
+    <h3>{{ alert.disaster_type }}</h3>
+    <p><strong>Location:</strong> {{ alert.location }}</p>
+    <p><strong>Severity:</strong> {{ alert.severity }}</p>
+    <p>{{ alert.description }}</p>
+  </div>
+  {% endfor %} {% else %}
+  <p>No alerts at the moment. Stay safe!</p>
+  {% endif %}
+</div>
+
+<script>
+  function fetchWeather(lat, lon) {
+    fetch(`/get-location-weather/?lat=${lat}&lon=${lon}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          document.getElementById("weatherLocation").innerText =
+            "Weather unavailable";
+          return;
+        }
+
+        document.getElementById("weatherLocation").innerText =
+          data.city + ", " + data.country;
+
+        document.getElementById("weatherTemp").innerText =
+          data.temperature + " °C";
+
+        document.getElementById("weatherCondition").innerText = data.condition;
+
+        // 🔥 AUTO WEATHER WARNING LOGIC
+        if (data.temperature > 38) {
+          alert(
+            "⚠ Heatwave Warning! Stay hydrated and avoid outdoor activity.",
+          );
+        }
+
+        if (data.condition.includes("rain")) {
+          alert(
+            "⚠ Rain Advisory! Drive carefully and avoid waterlogged areas.",
+          );
+        }
+      });
+  }
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      fetchWeather(position.coords.latitude, position.coords.longitude);
+    });
+  }
+</script>
+
+{% endblock %}

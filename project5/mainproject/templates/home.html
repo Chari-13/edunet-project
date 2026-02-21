@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- ================= HERO SECTION ================= -->
+
+<section class="hero" style="text-align:center; padding:60px 20px;">
+  <h1>Stay Alert. Stay Safe.</h1>
+  <p>Real-time disaster alerts and safety guidance for everyone.</p>
+</section>
+
+<!-- ================= DISASTER INFO CARDS ================= -->
+
+<section class="cards" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap;">
+  <div class="card" style="width:250px; padding:20px; background:white; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+    <h3>🌊 Flood Alerts</h3>
+    <p>Get instant flood warnings in your area.</p>
+  </div>
+
+  <div class="card" style="width:250px; padding:20px; background:white; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+    <h3>🌪 Cyclone Alerts</h3>
+    <p>Early cyclone detection and updates.</p>
+  </div>
+
+  <div class="card" style="width:250px; padding:20px; background:white; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+    <h3>🫨 Earthquake Alerts</h3>
+    <p>Seismic alerts and safety measures.</p>
+  </div>
+</section>
+
+<!-- ================= WEATHER SECTION ================= -->
+
+<h3 style="text-align:center; margin-top:60px;">🌦 Current Weather</h3>
+
+<div style="display:flex; justify-content:center; margin-top:20px;">
+  <div style="background:white; padding:30px; width:350px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.1); text-align:center;">
+    
+    <p><strong>📍 Location:</strong> <span id="location">Fetching...</span></p>
+
+    <div style="font-size:40px; margin:15px 0;">
+      <span id="temp">--</span>
+    </div>
+
+    <div style="font-size:50px;" id="weather-icon">☁️</div>
+
+    <p style="font-size:18px;">
+      <span id="condition">--</span>
+    </p>
+
+    <hr style="margin:15px 0;" />
+
+    <small>Lat: <span id="lat"></span> | Lon: <span id="lon"></span></small>
+  </div>
+</div>
+
+<!-- ================= MAP SECTION ================= -->
+
+<h3 style="text-align:center; margin-top:60px;">🗺 Disaster Alert Map</h3>
+<div id="map" style="height:500px; width:100%; margin:20px 0;"></div>
+
+<!-- ================= SCRIPTS ================= -->
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  // ================= WEATHER =================
+
+  function fetchWeather(lat, lon) {
+
+    document.getElementById("lat").innerText = lat;
+    document.getElementById("lon").innerText = lon;
+
+    fetch(`/get-location-weather/?lat=${lat}&lon=${lon}`)
+      .then(response => response.json())
+      .then(data => {
+
+        if (data.error) {
+          document.getElementById("location").innerText = "Weather unavailable";
+          return;
+        }
+
+        document.getElementById("location").innerText =
+          data.city + ", " + data.country;
+
+        document.getElementById("temp").innerText =
+          data.temperature + " °C";
+
+        document.getElementById("condition").innerText =
+          data.condition;
+
+        let condition = data.condition.toLowerCase();
+        let icon = "☁️";
+
+        if (condition.includes("clear")) icon = "☀️";
+        else if (condition.includes("cloud")) icon = "☁️";
+        else if (condition.includes("rain")) icon = "🌧️";
+        else if (condition.includes("storm")) icon = "⛈️";
+        else if (condition.includes("snow")) icon = "❄️";
+
+        document.getElementById("weather-icon").innerText = icon;
+
+      })
+      .catch(() => {
+        document.getElementById("location").innerText = "Weather fetch failed";
+      });
+  }
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      fetchWeather(position.coords.latitude, position.coords.longitude);
+    });
+  } else {
+    fetchWeather("12.9716", "77.5946");
+  }
+
+  // ================= MAP =================
+
+  if (window.myMap) {
+    window.myMap.remove();
+  }
+
+  window.myMap = L.map("map").setView([20.5937, 78.9629], 6);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "© OpenStreetMap",
+  }).addTo(window.myMap);
+
+  // User Location
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      let userLat = position.coords.latitude;
+      let userLon = position.coords.longitude;
+
+      window.myMap.setView([userLat, userLon], 10);
+
+      L.marker([userLat, userLon])
+        .addTo(window.myMap)
+        .bindPopup("📍 You are here")
+        .openPopup();
+    });
+  }
+
+  // Alert Data from backend
+  const alertData = JSON.parse("{{ alert_data|default:'[]'|escapejs }}");
+
+  alertData.forEach(function(alert) {
+
+    if (alert.latitude && alert.longitude) {
+
+      let color = "green";
+      if (alert.severity === "High") color = "red";
+      else if (alert.severity === "Medium") color = "orange";
+
+      L.circle([alert.latitude, alert.longitude], {
+        color: color,
+        fillColor: color,
+        fillOpacity: 0.5,
+        radius: alert.severity === "High" ? 7000 : 4000
+      })
+      .addTo(window.myMap)
+      .bindPopup(`
+        <b>${alert.disaster_type}</b><br>
+        Severity: ${alert.severity}<br>
+        ${alert.description}<br>
+        <b style="color:red;">⚠ Move to safer location immediately!</b>
+      `);
+    }
+
+  });
+
+});
+</script>
+
+{% endblock %}
